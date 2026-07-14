@@ -12,26 +12,62 @@ function getBotReply(input, state) {
   const { name, country, university, countryData, universityData } = state;
   const t = input.toLowerCase();
 
+  // Check if user is correcting country mid-conversation
+  if (name && (t.includes('i am from') || t.includes('i said') || t.includes('actually from') || t.includes('i mean'))) {
+    const found = getCountryData(input);
+    if (found) {
+      return {
+        field: 'country', value: found.key, countryData: found,
+        text: 'Sorry about that! ' + found.flag + ' ' + found.fact + '\n\nHere are UK organisations supporting students from ' + found.key.charAt(0).toUpperCase() + found.key.slice(1) + ':\n\n' + found.orgs.map(o => '🤝 ' + o.name + '\n🔗 ' + o.url).join('\n\n') + '\n\n' + (university ? 'What would you like help with today, ' + name + '? 💙' : 'Which university are you studying at?')
+      };
+    }
+  }
+
+  // Check if user mentions a new university mid-conversation
+  if (name && (t.includes('i study at') || t.includes('i go to') || t.includes('i attend') || t.includes('my uni') || t.includes('my university'))) {
+    const found = getUniversityData(input);
+    if (found) {
+      return {
+        field: 'university', value: found.name, universityData: found,
+        text: '🏫 ' + found.fact + '\n\nHere are the key support services at ' + found.name + ':\n\n' + found.links.map(l => '📌 ' + l.label + ' — ' + l.desc + '\n🔗 ' + l.url).join('\n\n') + '\n\nWhat would you like help with today, ' + name + '? I am here to listen 💙'
+      };
+    }
+  }
+
   // Step 1 — collect name
   if (!name) {
-    const words = input.trim().split(' ');
-    const n = words[words.length - 1];
-    return { field: 'name', value: n, text: `Nice to meet you, ${n}! 😊 I am really glad you reached out today.\n\nAre you a home (UK) student or an international student? And which country are you from?` };
+    const namePatterns = [
+      /(?:i am|i'm|my name is|call me|this is)\s+([a-zA-Z]+)/i,
+      /^([a-zA-Z]{2,15})$/i,
+      /^hi[,\s]+(?:i am|i'm|my name is)?\s*([a-zA-Z]+)/i,
+    ];
+    let detectedName = null;
+    for (const pattern of namePatterns) {
+      const match = input.match(pattern);
+      if (match) { detectedName = match[1]; break; }
+    }
+    const skipWords = ['from','nepali','nepal','india','indian','pakistan','nigerian','nigeria','chinese','bangladeshi','kenyan','hello','hi','hey','student','international','home','uk','abroad','stressed','anxious','help','sad','lonely'];
+    if (detectedName && skipWords.includes(detectedName.toLowerCase())) detectedName = null;
+    if (!detectedName) {
+      return { field: null, value: null, text: 'I did not quite catch your name there! 😊 Could you just tell me your first name? For example — just type "Prestha" or "My name is Prestha".' };
+    }
+    const n = detectedName.charAt(0).toUpperCase() + detectedName.slice(1).toLowerCase();
+    return { field: 'name', value: n, text: 'Nice to meet you, ' + n + '! 😊 I am really glad you reached out today.\n\nWhich country are you originally from?' };
   }
 
   // Step 2 — collect country
   if (!country) {
     const found = getCountryData(input);
     if (found) {
-      const isUK = ['united kingdom','england','scotland','wales','northern ireland'].some(k => input.toLowerCase().includes(k));
+      const isUK = ['united kingdom','england','scotland','wales','northern ireland'].some(k => t.includes(k));
       return {
-        field: 'country', value: input.trim(), countryData: found,
+        field: 'country', value: found.key, countryData: found,
         text: isUK
-          ? `🇬🇧 Welcome, home student! Great to have you here.\n\nAs a UK home student, here are some key support resources:\n\n💰 Student Finance England — loans and grants:\ngov.uk/student-finance\n\n⚖️ Citizens Advice — free legal and financial advice:\ncitizensadvice.org.uk\n\n🔍 Turn2Us — find grants and benefits:\nturn2us.org.uk\n\nWhich university are you studying at?`
-          : `${found.flag} ${found.fact}\n\nHere are UK organisations that support students from ${input.trim()}:\n\n🏛️ ${found.embassy.name}\n🔗 ${found.embassy.url}\n\n${found.orgs.map(o => `🤝 ${o.name}\n🔗 ${o.url}`).join('\n\n')}\n\nWhich university are you studying at?`
+          ? '🇬🇧 Welcome, home student!\n\nAs a UK home student here are some key resources:\n\n💰 Student Finance England: gov.uk/student-finance\n⚖️ Citizens Advice: citizensadvice.org.uk\n🔍 Turn2Us: turn2us.org.uk\n\nWhich university are you studying at?'
+          : found.flag + ' ' + found.fact + '\n\nHere are UK organisations supporting students from ' + found.key.charAt(0).toUpperCase() + found.key.slice(1) + ':\n\n🏛️ ' + found.embassy.name + '\n🔗 ' + found.embassy.url + '\n\n' + found.orgs.map(o => '🤝 ' + o.name + '\n🔗 ' + o.url).join('\n\n') + '\n\nWhich university are you studying at?'
       };
     }
-    return { field: 'country', value: input.trim(), countryData: null, text: `What a wonderful place to be from! 🌍\n\nFor support from your home country, search "${input.trim()} embassy London" to find their UK contact.\n\nWhich university are you studying at?` };
+    return { field: 'country', value: input.trim(), countryData: null, text: 'What a wonderful place to be from! 🌍\n\nFor support from your home country, search "' + input.trim() + ' embassy London".\n\nWhich university are you studying at?' };
   }
 
   // Step 3 — collect university
@@ -39,11 +75,14 @@ function getBotReply(input, state) {
     const found = getUniversityData(input);
     if (found) {
       return {
-        field: 'university', value: input.trim(), universityData: found,
-        text: `🏫 ${found.fact}\n\nHere are the key support services at ${found.name}:\n\n${found.links.map(l => `📌 ${l.label} — ${l.desc}\n🔗 ${l.url}`).join('\n\n')}\n\nWhat would you like help with today, ${name}? I am here to listen 💙`
+        field: 'university', value: found.name, universityData: found,
+        text: '🏫 ' + found.fact + '\n\nHere are the key support services at ' + found.name + ':\n\n' + found.links.map(l => '📌 ' + l.label + ' — ' + l.desc + '\n🔗 ' + l.url).join('\n\n') + '\n\nWhat would you like help with today, ' + name + '? I am here to listen 💙'
       };
     }
-    return { field: 'university', value: input.trim(), universityData: null, text: `${input.trim()} sounds like a great university! 🏫\n\nVisit your university website and search for:\n• Student Union\n• Student Wellbeing or Counselling\n• Careers Centre\n• International Student Support\n\nWhat would you like help with today, ${name}? 💙` };
+    if (t.includes("don't know") || t.includes('not sure') || t.includes('skip')) {
+      return { field: 'university', value: 'unknown', universityData: null, text: 'No problem at all ' + name + '! You can always tell me your university later.\n\nWhat would you like help with today? Whether it is stress, housing, loneliness, careers or anything else — I am here 💙' };
+    }
+    return { field: 'university', value: input.trim(), universityData: null, text: input.trim() + ' sounds like a great place to study! 🏫\n\nFor support there, visit your university website and look for Student Union, Wellbeing and Careers.\n\nWhat would you like help with today, ' + name + '? 💙' };
   }
 
   // Topic responses
