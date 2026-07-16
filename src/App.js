@@ -4,6 +4,7 @@ import { getUniversityData } from './data/universities';
 import MentalHealthResources from './pages/MentalHealthResources';
 import MoodTrackerPage from './pages/MoodTrackerPage';
 import HomePage from './pages/HomePage';
+import ProfilePage from './pages/ProfilePage';
 import LoginPage from './pages/LoginPage';
 
 // ── CRISIS DETECTION ─────────────────────────────────────────────
@@ -410,7 +411,7 @@ function HamburgerMenu({ onClose, countryData, universityData }) {
 
 // ── MAIN APP ──────────────────────────────────────────────────────
 export default function App() {
-  const [screen, setScreen] = useState('mood');
+  const [screen, setScreen] = useState('main');
   const [mood, setMood] = useState('');
   const [activeTab, setActiveTab] = useState('home');
   const [messages, setMessages] = useState([]);
@@ -455,7 +456,7 @@ export default function App() {
   }
 
   // Show nothing while checking auth
-  if (!authChecked) return null;
+  if (!authChecked) return <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',fontFamily:'Arial',color:'#0f2744',fontSize:'18px'}}>💙 Loading MindBridge...</div>;
 
   // Show login page if not logged in
   if (!user) return <LoginPage onLogin={handleLogin} />;
@@ -492,6 +493,7 @@ export default function App() {
     { id: 'nhs', icon: '🏥', label: 'Mental Health Resources' },
     { id: 'university', icon: '🏫', label: 'My University' },
     { id: 'country', icon: '🌍', label: 'My Country Support' },
+    { id: 'profile', icon: '👤', label: 'My Profile' },
   ];
 
   if (screen === 'mood') return <MoodScreen onSelect={selectMood} />;
@@ -510,8 +512,8 @@ export default function App() {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div style={{ position: 'relative' }}>
-            <button onClick={() => setShowProfile(!showProfile)} style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '20px', padding: '6px 14px', fontSize: '13px', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              👤 {user?.name} ▾
+            <button onClick={() => { setActiveTab('profile'); setShowProfile(false); }} style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '20px', padding: '6px 14px', fontSize: '13px', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              👤 {user?.name}
             </button>
             {showProfile && (
               <div style={{ position: 'absolute', right: 0, top: '110%', background: 'white', borderRadius: '14px', boxShadow: '0 8px 40px rgba(0,0,0,0.15)', padding: '20px', minWidth: '280px', zIndex: 100, border: '1px solid #e5e7eb' }}>
@@ -586,6 +588,7 @@ export default function App() {
           {activeTab === 'nhs' && <MentalHealthResources />}
           {activeTab === 'university' && <UniversityPage universityData={student.universityData} university={student.university} />}
           {activeTab === 'country' && <CountryPage countryData={student.countryData} country={student.country} />}
+          {activeTab === 'profile' && <ProfilePage user={user} setUser={setUser} moodHistory={moodHistory} onLogout={handleLogout} />}
         </main>
       </div>
     </div>
