@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { getCountryData } from './data/countries';
 import { getUniversityData } from './data/universities';
 import MentalHealthResources from './pages/MentalHealthResources';
+import MoodTrackerPage from './pages/MoodTrackerPage';
+import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 
 // ── CRISIS DETECTION ─────────────────────────────────────────────
@@ -278,41 +280,6 @@ function ChatPage({ messages, input, setInput, sendMessage, student, mood }) {
   );
 }
 
-// ── MOOD TRACKER PAGE ─────────────────────────────────────────────
-function MoodTrackerPage({ moodHistory, setMoodHistory }) {
-  const moodEmoji = { 1: '😔', 2: '😕', 3: '😐', 4: '🙂', 5: '😊' };
-  return (
-    <div style={{ flex: 1, overflowY: 'auto', padding: '28px 36px', background: '#f8f9fc' }}>
-      <div style={{ background: 'white', padding: '24px 28px', borderRadius: '16px', border: '1px solid #eaecf0', marginBottom: '24px' }}>
-        <h2 style={{ margin: '0 0 6px', fontSize: '22px', fontWeight: '800', color: '#0f2744' }}>📊 Mood Tracker</h2>
-        <p style={{ margin: 0, color: '#6b7280', fontSize: '14px' }}>Your mood history — select your mood each day to track patterns over time</p>
-      </div>
-      {moodHistory.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '80px', background: 'white', borderRadius: '16px', border: '1px solid #eaecf0' }}>
-          <p style={{ fontSize: '64px', margin: '0 0 20px' }}>📊</p>
-          <h3 style={{ margin: '0 0 8px', color: '#0f2744' }}>No mood history yet</h3>
-          <p style={{ color: '#9ca3af', fontSize: '15px' }}>Select your mood each day when you open MindBridge. Your history will appear here.</p>
-        </div>
-      ) : (
-        <div style={{ background: 'white', borderRadius: '16px', padding: '28px', border: '1px solid #eaecf0' }}>
-          <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', marginBottom: '24px' }}>
-            {moodHistory.map((entry, i) => (
-              <div key={i} style={{ textAlign: 'center', background: '#f8f9fc', borderRadius: '14px', padding: '16px 14px', minWidth: '80px', border: '1px solid #eaecf0' }}>
-                <div style={{ fontSize: '32px' }}>{moodEmoji[entry.value] || '😐'}</div>
-                <div style={{ fontSize: '11px', color: '#9ca3af', marginTop: '6px' }}>{entry.date}</div>
-                <div style={{ fontSize: '11px', color: '#1a3a5c', fontWeight: '700', marginTop: '2px' }}>{entry.label}</div>
-              </div>
-            ))}
-          </div>
-          <button onClick={() => { localStorage.removeItem('moodHistory'); setMoodHistory([]); }} style={{ background: '#fff0f0', color: '#c00', border: '1px solid #fcc', borderRadius: '8px', padding: '8px 18px', cursor: 'pointer', fontSize: '13px', fontWeight: '600' }}>
-            Clear History
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
 // ── UNIVERSITY PAGE ───────────────────────────────────────────────
 function UniversityPage({ universityData, university }) {
   if (!universityData) return (
@@ -445,7 +412,7 @@ function HamburgerMenu({ onClose, countryData, universityData }) {
 export default function App() {
   const [screen, setScreen] = useState('mood');
   const [mood, setMood] = useState('');
-  const [activeTab, setActiveTab] = useState('chat');
+  const [activeTab, setActiveTab] = useState('home');
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [student, setStudent] = useState({ name: '', country: '', university: '', countryData: null, universityData: null });
@@ -453,6 +420,9 @@ export default function App() {
   const [showCrisis, setShowCrisis] = useState(false);
   const [moodHistory, setMoodHistory] = useState([]);
   const [user, setUser] = useState(null);
+  const [showProfile, setShowProfile] = useState(false);
+  const [profileForm, setProfileForm] = useState({ name: '', currentPassword: '', newPassword: '' });
+  const [profileMsg, setProfileMsg] = useState('');
   const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
@@ -470,6 +440,8 @@ export default function App() {
 
   function handleLogin(loggedInUser) {
     setUser(loggedInUser);
+    setScreen('main');
+    setActiveTab('home');
     setStudent(p => ({ ...p, name: loggedInUser.name }));
   }
 
@@ -491,11 +463,10 @@ export default function App() {
   function selectMood(label, value) {
     const entry = { date: new Date().toLocaleDateString('en-GB'), label, value };
     const history = JSON.parse(localStorage.getItem('moodHistory') || '[]');
-    const updated = [...history, entry].slice(-30);
+    const updated = [...history.filter(m => m.date !== entry.date), entry].slice(-30);
     localStorage.setItem('moodHistory', JSON.stringify(updated));
     setMoodHistory(updated);
     setMood(label);
-    setScreen('main');
     setMessages([{ sender: 'bot', text: `Hello! Welcome to MindBridge 💙\n\nI can see you are feeling ${label} today — thank you for sharing that. Whether you are a home student or studying here from abroad, I am here to support you.\n\nCould you start by telling me your name?` }]);
   }
 
@@ -514,7 +485,14 @@ export default function App() {
   }
 
   const moodEmoji = { 'Very Low': '😔', 'Not Great': '😕', 'Okay': '😐', 'Good': '🙂', 'Great': '😊' };
-  const tabs = [{ id: 'chat', icon: '💬', label: 'Chat Support' }, { id: 'mood', icon: '📊', label: 'Mood Tracker' }, { id: 'nhs', icon: '🏥', label: 'Mental Health Resources' }, { id: 'university', icon: '🏫', label: 'My University' }, { id: 'country', icon: '🌍', label: 'My Country Support' }];
+  const tabs = [
+    { id: 'home', icon: '🏠', label: 'Home' },
+    { id: 'chat', icon: '💬', label: 'Chat Support' },
+    { id: 'mood', icon: '📊', label: 'Mood Tracker' },
+    { id: 'nhs', icon: '🏥', label: 'Mental Health Resources' },
+    { id: 'university', icon: '🏫', label: 'My University' },
+    { id: 'country', icon: '🌍', label: 'My Country Support' },
+  ];
 
   if (screen === 'mood') return <MoodScreen onSelect={selectMood} />;
 
@@ -531,10 +509,45 @@ export default function App() {
           <span style={{ background: 'rgba(255,255,255,0.15)', borderRadius: '20px', padding: '3px 12px', fontSize: '12px', fontWeight: '600' }}>For University Students in the UK</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {student.name && <span style={{ background: 'rgba(255,255,255,0.15)', borderRadius: '20px', padding: '4px 14px', fontSize: '13px' }}>👤 {student.name}</span>}
+          <div style={{ position: 'relative' }}>
+            <button onClick={() => setShowProfile(!showProfile)} style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '20px', padding: '6px 14px', fontSize: '13px', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              👤 {user?.name} ▾
+            </button>
+            {showProfile && (
+              <div style={{ position: 'absolute', right: 0, top: '110%', background: 'white', borderRadius: '14px', boxShadow: '0 8px 40px rgba(0,0,0,0.15)', padding: '20px', minWidth: '280px', zIndex: 100, border: '1px solid #e5e7eb' }}>
+                <div style={{ borderBottom: '1px solid #f3f4f6', paddingBottom: '14px', marginBottom: '14px' }}>
+                  <p style={{ margin: '0 0 2px', fontWeight: '800', color: '#0f2744', fontSize: '15px' }}>👤 {user?.name}</p>
+                  <p style={{ margin: 0, fontSize: '13px', color: '#9ca3af' }}>{user?.email}</p>
+                </div>
+                <div style={{ marginBottom: '14px' }}>
+                  <p style={{ margin: '0 0 8px', fontSize: '12px', fontWeight: '700', color: '#374151', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Change Password</p>
+                  <input placeholder="Current password" type="password" value={profileForm.currentPassword} onChange={e => setProfileForm(p => ({...p, currentPassword: e.target.value}))} style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: '13px', marginBottom: '8px', boxSizing: 'border-box', outline: 'none' }} />
+                  <input placeholder="New password (min 6 chars)" type="password" value={profileForm.newPassword} onChange={e => setProfileForm(p => ({...p, newPassword: e.target.value}))} style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: '13px', marginBottom: '10px', boxSizing: 'border-box', outline: 'none' }} />
+                  {profileMsg && <p style={{ margin: '0 0 8px', fontSize: '12px', color: profileMsg.includes('✅') ? '#15803d' : '#dc2626', fontWeight: '600' }}>{profileMsg}</p>}
+                  <button onClick={() => {
+                    if (!profileForm.currentPassword || !profileForm.newPassword) { setProfileMsg('⚠️ Fill in both fields'); return; }
+                    if (profileForm.newPassword.length < 6) { setProfileMsg('⚠️ New password too short'); return; }
+                    const users = JSON.parse(localStorage.getItem('mindbridge_users') || '[]');
+                    const userIndex = users.findIndex(u => u.email === user.email && u.password === profileForm.currentPassword);
+                    if (userIndex === -1) { setProfileMsg('⚠️ Current password incorrect'); return; }
+                    users[userIndex].password = profileForm.newPassword;
+                    localStorage.setItem('mindbridge_users', JSON.stringify(users));
+                    setProfileMsg('✅ Password updated!');
+                    setProfileForm({ name: '', currentPassword: '', newPassword: '' });
+                    setTimeout(() => setProfileMsg(''), 3000);
+                  }} style={{ width: '100%', padding: '10px', background: 'linear-gradient(135deg,#2E75B6,#0f2744)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '700', fontSize: '13px' }}>
+                    Update Password
+                  </button>
+                </div>
+                <button onClick={() => { setShowProfile(false); handleLogout(); }} style={{ width: '100%', padding: '10px', background: '#fff0f0', color: '#dc2626', border: '1px solid #fecaca', borderRadius: '8px', cursor: 'pointer', fontWeight: '700', fontSize: '13px' }}>
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
           {student.country && <span style={{ background: 'rgba(255,255,255,0.15)', borderRadius: '20px', padding: '4px 14px', fontSize: '13px' }}>{student.countryData?.flag || '🌍'} {student.country}</span>}
           <button onClick={() => setShowCrisis(true)} style={{ background: '#C00000', color: 'white', border: 'none', borderRadius: '10px', padding: '8px 16px', cursor: 'pointer', fontWeight: '700', fontSize: '13px' }}>🚨 Crisis: 116 123</button>
-          <button onClick={handleLogout} style={{ background: 'rgba(255,255,255,0.15)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '10px', padding: '8px 14px', cursor: 'pointer', fontSize: '13px' }}>Logout</button>
+
         </div>
       </nav>
 
@@ -567,6 +580,7 @@ export default function App() {
 
         {/* MAIN CONTENT */}
         <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          {activeTab === 'home' && <HomePage user={user} mood={mood} onSelectMood={selectMood} setActiveTab={setActiveTab} />}
           {activeTab === 'chat' && <ChatPage messages={messages} input={input} setInput={setInput} sendMessage={sendMessage} student={student} mood={mood} />}
           {activeTab === 'mood' && <MoodTrackerPage moodHistory={moodHistory} setMoodHistory={setMoodHistory} />}
           {activeTab === 'nhs' && <MentalHealthResources />}
