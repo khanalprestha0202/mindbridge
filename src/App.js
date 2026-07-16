@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { getCountryData } from './data/countries';
 import { getUniversityData } from './data/universities';
 import MentalHealthResources from './pages/MentalHealthResources';
+import LoginPage from './pages/LoginPage';
 
 // ── CRISIS DETECTION ─────────────────────────────────────────────
 const CRISIS_WORDS = ['suicide','kill myself','end my life','self harm','self-harm','want to die','hurt myself','no point living','overdose'];
@@ -12,13 +13,13 @@ function getBotReply(input, state) {
   const { name, country, university, countryData, universityData } = state;
   const t = input.toLowerCase();
 
-  // Check if user is correcting country mid-conversation
-  if (name && (t.includes('i am from') || t.includes('i said') || t.includes('actually from') || t.includes('i mean'))) {
+  // Check if user is correcting country mid-conversation — only if country already set
+  if (name && country && (t.includes('i said') || t.includes('actually from') || t.includes('no i am from') || t.includes('i mean') || t.includes('correction'))) {
     const found = getCountryData(input);
     if (found) {
       return {
         field: 'country', value: found.key, countryData: found,
-        text: 'Sorry about that! ' + found.flag + ' ' + found.fact + '\n\nHere are UK organisations supporting students from ' + found.key.charAt(0).toUpperCase() + found.key.slice(1) + ':\n\n' + found.orgs.map(o => '🤝 ' + o.name + '\n🔗 ' + o.url).join('\n\n') + '\n\n' + (university ? 'What would you like help with today, ' + name + '? 💙' : 'Which university are you studying at?')
+        text: 'Of course! ' + found.flag + ' ' + found.fact + '\n\nHere are UK organisations supporting students from ' + found.key.charAt(0).toUpperCase() + found.key.slice(1) + ':\n\n' + found.orgs.map(o => '🤝 ' + o.name + '\n🔗 ' + o.url).join('\n\n') + '\n\n' + (university ? 'What would you like help with today, ' + name + '? 💙' : 'Which university are you studying at?')
       };
     }
   }
@@ -130,27 +131,90 @@ function getBotReply(input, state) {
 
 // ── MOOD SCREEN ───────────────────────────────────────────────────
 function MoodScreen({ onSelect }) {
-  const moods = [{ e: '😔', l: 'Very Low', v: 1 }, { e: '😕', l: 'Not Great', v: 2 }, { e: '😐', l: 'Okay', v: 3 }, { e: '🙂', l: 'Good', v: 4 }, { e: '😊', l: 'Great', v: 5 }];
+  const [selected, setSelected] = useState(null);
+  const [animating, setAnimating] = useState(false);
+
+  const moods = [
+    { e: '😔', l: 'Very Low', v: 1, color: '#6B7280', bg: '#F3F4F6', desc: 'I am really struggling today' },
+    { e: '😕', l: 'Not Great', v: 2, color: '#F59E0B', bg: '#FFFBEB', desc: 'Things are a bit tough' },
+    { e: '😐', l: 'Okay', v: 3, color: '#3B82F6', bg: '#EFF6FF', desc: 'Getting through the day' },
+    { e: '🙂', l: 'Good', v: 4, color: '#10B981', bg: '#ECFDF5', desc: 'Feeling pretty good' },
+    { e: '😊', l: 'Great', v: 5, color: '#8B5CF6', bg: '#F5F3FF', desc: 'Having a great day!' },
+  ];
+
+  function handleSelect(mood) {
+    setSelected(mood.v);
+    setAnimating(true);
+    setTimeout(() => onSelect(mood.l, mood.v), 800);
+  }
+
+  const time = new Date().getHours();
+  const greeting = time < 12 ? 'Good morning' : time < 17 ? 'Good afternoon' : 'Good evening';
+
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#0f2744 0%,#1a3a5c 40%,#2E75B6 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Segoe UI',Arial,sans-serif" }}>
-      <div style={{ textAlign: 'center', padding: '60px 40px', maxWidth: '600px', width: '100%' }}>
-        <div style={{ fontSize: '72px', marginBottom: '16px' }}>💙</div>
-        <h1 style={{ color: 'white', fontSize: '42px', fontWeight: '800', margin: '0 0 8px', letterSpacing: '-1px' }}>MindBridge</h1>
-        <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '18px', margin: '0 0 6px' }}>Your Mental Health Companion</p>
-        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px', margin: '0 0 50px' }}>Supporting all university students in the UK — home and international</p>
-        <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '24px', padding: '40px', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.15)' }}>
-          <h2 style={{ color: 'white', fontSize: '22px', margin: '0 0 30px', fontWeight: '600' }}>How are you feeling today?</h2>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
-            {moods.map(m => (
-              <button key={m.l} onClick={() => onSelect(m.l, m.v)} style={{ background: 'rgba(255,255,255,0.95)', border: 'none', borderRadius: '16px', padding: '18px 14px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '90px', boxShadow: '0 8px 24px rgba(0,0,0,0.2)' }}>
-                <span style={{ fontSize: '36px' }}>{m.e}</span>
-                <span style={{ fontSize: '11px', color: '#333', marginTop: '8px', fontWeight: '700' }}>{m.l}</span>
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(160deg, #0a1628 0%, #0f2744 60%, #1a3a5c 100%)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontFamily: "'Segoe UI', Arial, sans-serif",
+      position: 'relative', overflow: 'hidden',
+    }}>
+      <div style={{ position: 'absolute', top: '-100px', left: '-100px', width: '400px', height: '400px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(46,117,182,0.15) 0%, transparent 70%)' }} />
+      <div style={{ position: 'absolute', bottom: '-80px', right: '-80px', width: '350px', height: '350px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%)' }} />
+
+      <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '700px', padding: '40px 24px', textAlign: 'center' }}>
+        <div style={{ marginBottom: '32px' }}>
+          <div style={{ width: '72px', height: '72px', borderRadius: '20px', background: 'linear-gradient(135deg, #2E75B6, #5ba3d9)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '36px', margin: '0 auto 16px', boxShadow: '0 16px 48px rgba(46,117,182,0.4)' }}>💙</div>
+          <h1 style={{ color: 'white', fontSize: '36px', fontWeight: '800', margin: '0 0 6px', letterSpacing: '-1px' }}>MindBridge</h1>
+          <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '14px', margin: 0 }}>Your Mental Health Companion</p>
+        </div>
+
+        <div style={{ background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(20px)', borderRadius: '20px', padding: '36px 32px 40px', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 24px 80px rgba(0,0,0,0.3)' }}>
+          <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '600' }}>{greeting} 👋</p>
+          <h2 style={{ color: 'white', fontSize: '26px', fontWeight: '800', margin: '0 0 6px', letterSpacing: '-0.5px' }}>How are you feeling today?</h2>
+          <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '14px', margin: '0 0 36px' }}>Select the emoji that best describes your mood right now</p>
+
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '28px' }}>
+            {moods.map(mood => (
+              <button key={mood.v} onClick={() => handleSelect(mood)} style={{
+                background: selected === mood.v ? mood.bg : 'rgba(255,255,255,0.08)',
+                border: selected === mood.v ? `2px solid ${mood.color}` : '2px solid rgba(255,255,255,0.1)',
+                borderRadius: '16px', padding: '20px 16px', cursor: 'pointer',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+                minWidth: '100px', flex: '1', maxWidth: '120px',
+                transform: selected === mood.v ? 'scale(1.08)' : 'scale(1)',
+                transition: 'all 0.2s ease',
+                boxShadow: selected === mood.v ? `0 8px 24px ${mood.color}40` : 'none',
+              }}>
+                <span style={{ fontSize: '42px', lineHeight: 1 }}>{mood.e}</span>
+                <span style={{ fontSize: '12px', fontWeight: '700', color: selected === mood.v ? mood.color : 'rgba(255,255,255,0.8)' }}>{mood.l}</span>
+                {selected === mood.v && <span style={{ fontSize: '11px', color: mood.color, lineHeight: '1.4', textAlign: 'center' }}>{mood.desc}</span>}
               </button>
             ))}
           </div>
+
+          {animating && (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+              <div style={{ width: '18px', height: '18px', border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+              <p style={{ color: 'white', fontSize: '14px', margin: 0, fontWeight: '600' }}>Opening MindBridge...</p>
+            </div>
+          )}
         </div>
-        <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '12px', marginTop: '24px' }}>MindBridge supports all UK university students — home, EU and international. Not a substitute for professional care.</p>
+
+        <div style={{ display: 'flex', gap: '16px', marginTop: '24px', justifyContent: 'center' }}>
+          {[{ label: 'Countries', value: '40+' }, { label: 'UK Universities', value: '35+' }, { label: 'Free NHS Links', value: '8' }].map(stat => (
+            <div key={stat.label} style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '12px', padding: '14px 20px', border: '1px solid rgba(255,255,255,0.08)', flex: 1, maxWidth: '160px' }}>
+              <p style={{ margin: '0 0 2px', color: 'white', fontSize: '22px', fontWeight: '800' }}>{stat.value}</p>
+              <p style={{ margin: 0, color: 'rgba(255,255,255,0.45)', fontSize: '11px' }}>{stat.label}</p>
+            </div>
+          ))}
+        </div>
+
+        <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: '11px', marginTop: '20px', lineHeight: '1.6' }}>
+          Not a substitute for professional mental health care · In a crisis call Samaritans free on 116 123
+        </p>
       </div>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }
@@ -388,11 +452,41 @@ export default function App() {
   const [showMenu, setShowMenu] = useState(false);
   const [showCrisis, setShowCrisis] = useState(false);
   const [moodHistory, setMoodHistory] = useState([]);
+  const [user, setUser] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('moodHistory') || '[]');
     setMoodHistory(saved);
+    // Check if user is already logged in
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      const parsedUser = JSON.parse(savedUser);
+      setUser(parsedUser);
+      setStudent(p => ({ ...p, name: parsedUser.name }));
+    }
+    setAuthChecked(true);
   }, []);
+
+  function handleLogin(loggedInUser) {
+    setUser(loggedInUser);
+    setStudent(p => ({ ...p, name: loggedInUser.name }));
+  }
+
+  function handleLogout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+    setScreen('mood');
+    setMessages([]);
+    setStudent({ name: '', country: '', university: '', countryData: null, universityData: null });
+  }
+
+  // Show nothing while checking auth
+  if (!authChecked) return null;
+
+  // Show login page if not logged in
+  if (!user) return <LoginPage onLogin={handleLogin} />;
 
   function selectMood(label, value) {
     const entry = { date: new Date().toLocaleDateString('en-GB'), label, value };
@@ -440,6 +534,7 @@ export default function App() {
           {student.name && <span style={{ background: 'rgba(255,255,255,0.15)', borderRadius: '20px', padding: '4px 14px', fontSize: '13px' }}>👤 {student.name}</span>}
           {student.country && <span style={{ background: 'rgba(255,255,255,0.15)', borderRadius: '20px', padding: '4px 14px', fontSize: '13px' }}>{student.countryData?.flag || '🌍'} {student.country}</span>}
           <button onClick={() => setShowCrisis(true)} style={{ background: '#C00000', color: 'white', border: 'none', borderRadius: '10px', padding: '8px 16px', cursor: 'pointer', fontWeight: '700', fontSize: '13px' }}>🚨 Crisis: 116 123</button>
+          <button onClick={handleLogout} style={{ background: 'rgba(255,255,255,0.15)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '10px', padding: '8px 14px', cursor: 'pointer', fontSize: '13px' }}>Logout</button>
         </div>
       </nav>
 
