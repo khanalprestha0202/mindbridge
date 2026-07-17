@@ -37,7 +37,7 @@ export default function MoodTrackerPage({ moodHistory, setMoodHistory }) {
     if (todayEntry) setTodayMood(todayEntry);
   }, [moodHistory]);
 
-  function logMood(score) {
+  async function logMood(score) {
     const today = now.toLocaleDateString('en-GB');
     const entry = {
       date: today,
@@ -46,6 +46,8 @@ export default function MoodTrackerPage({ moodHistory, setMoodHistory }) {
       note: note.trim(),
       time: timeStr,
     };
+
+    // Save to localStorage first (always works)
     const existing = moodHistory.find(m => m.date === today);
     let updated = existing
       ? moodHistory.map(m => m.date === today ? entry : m)
@@ -57,6 +59,24 @@ export default function MoodTrackerPage({ moodHistory, setMoodHistory }) {
     setNote('');
     setJustLogged(true);
     setTimeout(() => setJustLogged(false), 3000);
+
+    // Also save to database if backend is running
+    try {
+      const token = localStorage.getItem('token');
+      if (token && !token.startsWith('local-')) {
+        await fetch('http://localhost:5000/api/mood', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+          },
+          body: JSON.stringify({ score, label: MOOD_CONFIG[score].label, note: note.trim() }),
+        });
+      }
+    } catch (err) {
+      // Backend not available - localStorage backup already saved
+      console.log('Mood saved locally only');
+    }
   }
 
   function clearHistory() {

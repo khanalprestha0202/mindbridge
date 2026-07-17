@@ -86,10 +86,10 @@ export default function HomePage({ user, mood, onSelectMood, setActiveTab }) {
         <div style={{ background: 'white', borderRadius: '16px', padding: '28px', border: '1px solid #e5e7eb', marginBottom: '20px' }}>
           <h4 style={{ margin: '0 0 12px', fontSize: '16px', fontWeight: '800', color: '#0f2744' }}>🎯 What is MindBridge?</h4>
           <p style={{ margin: '0 0 10px', fontSize: '14px', color: '#374151', lineHeight: '1.75' }}>
-            MindBridge is a free, AI-free web application that provides personalised mental health support for university students. It uses a rule-based conversational chatbot that learns who you are — your name, country and university — and then provides tailored support and resources specific to your situation.
+            MindBridge is a free, AI-free web application that provides personalised mental health support for university students. It uses a rule-based conversational chatbot that learns who you are your name, country and university and then provides tailored support and resources specific to your situation.
           </p>
           <p style={{ margin: 0, fontSize: '14px', color: '#374151', lineHeight: '1.75' }}>
-            Unlike generic mental health apps, MindBridge understands the unique challenges faced by students — from academic pressure and exam stress to homesickness, visa concerns, housing issues and financial difficulties. It connects students to the right support at the right time.
+            Unlike generic mental health apps, MindBridge understands the unique challenges faced by students from academic pressure and exam stress to homesickness, visa concerns, housing issues and financial difficulties. It connects students to the right support at the right time.
           </p>
         </div>
 
@@ -140,7 +140,7 @@ export default function HomePage({ user, mood, onSelectMood, setActiveTab }) {
             <strong>MindBridge is not a substitute for professional mental health care.</strong> It is a support navigation tool designed to help students find the right resources and provide a first point of contact for those who are struggling.
           </p>
           <p style={{ margin: 0, fontSize: '14px', color: '#713F12', lineHeight: '1.75' }}>
-            <strong>In an emergency:</strong> Call <strong>999</strong> or go to your nearest A&E. For crisis support call <strong>Samaritans free on 116 123</strong> — available 24 hours a day, 7 days a week.
+            <strong>In an emergency:</strong> Call <strong>999</strong> or go to your nearest A&E. For crisis support call <strong>Samaritans free on 116 123</strong>  available 24 hours a day, 7 days a week.
           </p>
         </div>
 

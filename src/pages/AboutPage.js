@@ -8,7 +8,7 @@ export default function AboutPage() {
           <div style={{ fontSize: '48px', marginBottom: '16px' }}>💙</div>
           <h1 style={{ margin: '0 0 10px', fontSize: '28px', fontWeight: '800', letterSpacing: '-0.5px' }}>About MindBridge</h1>
           <p style={{ margin: 0, fontSize: '15px', opacity: 0.85, lineHeight: '1.7' }}>
-            MindBridge is a mental health support web application designed specifically for university students in the UK — both home and international students. It was built as part of a Masters dissertation project at St Mary's University, Twickenham.
+            MindBridge is a mental health support web application designed specifically for university students in the UK both home and international students. It was built as part of a Masters dissertation project at St Mary's University, Twickenham.
           </p>
         </div>
       </div>
@@ -19,10 +19,10 @@ export default function AboutPage() {
         <div style={{ background: 'white', borderRadius: '16px', padding: '28px', border: '1px solid #e5e7eb', marginBottom: '20px' }}>
           <h2 style={{ margin: '0 0 16px', fontSize: '18px', fontWeight: '800', color: '#0f2744' }}>🎯 What is MindBridge?</h2>
           <p style={{ margin: '0 0 12px', fontSize: '14px', color: '#374151', lineHeight: '1.75' }}>
-            MindBridge is a free, AI-free web application that provides personalised mental health support for university students. It uses a rule-based conversational chatbot that learns who you are — your name, country and university — and then provides tailored support and resources specific to your situation.
+            MindBridge is a free, AI-free web application that provides personalised mental health support for university students. It uses a rule-based conversational chatbot that learns who you are your name, country and university and then provides tailored support and resources specific to your situation.
           </p>
           <p style={{ margin: 0, fontSize: '14px', color: '#374151', lineHeight: '1.75' }}>
-            Unlike generic mental health apps, MindBridge understands the unique challenges faced by students — from academic pressure and exam stress to homesickness, visa concerns, housing issues and financial difficulties. It connects students to the right support at the right time.
+            Unlike generic mental health apps, MindBridge understands the unique challenges faced by students from academic pressure and exam stress to homesickness, visa concerns, housing issues and financial difficulties. It connects students to the right support at the right time.
           </p>
         </div>
 
@@ -34,7 +34,7 @@ export default function AboutPage() {
               { icon: '💬', title: 'Personalised Chat Support', desc: 'A conversational chatbot that learns your name, country and university and provides tailored advice and support links.' },
               { icon: '🌍', title: 'Country-Specific Support', desc: 'Embassy links, community organisations and support networks for students from 40+ countries studying in the UK.' },
               { icon: '🏫', title: 'University Support Links', desc: 'Direct links to student unions, wellbeing teams, careers centres and accommodation offices at 35+ UK universities.' },
-              { icon: '🏥', title: 'NHS Mental Health Resources', desc: 'Curated, verified free mental health services available to all students in the UK — including NHS Talking Therapies and Samaritans.' },
+              { icon: '🏥', title: 'NHS Mental Health Resources', desc: 'Curated, verified free mental health services available to all students in the UK including NHS Talking Therapies and Samaritans.' },
               { icon: '📊', title: 'Mood Tracker', desc: 'Log your mood daily with a visual chart showing your emotional patterns over time. Add notes to track what affects your wellbeing.' },
               { icon: '🚨', title: 'Crisis Detection', desc: 'Automatic detection of crisis language in chat messages, immediately displaying Samaritans (116 123) and emergency services.' },
             ].map(f => (
@@ -87,7 +87,7 @@ export default function AboutPage() {
             MindBridge does not provide clinical advice, diagnosis or therapy. The chatbot is rule-based and not a human counsellor. If you are experiencing a mental health crisis, please contact a professional service immediately.
           </p>
           <p style={{ margin: 0, fontSize: '14px', color: '#713F12', lineHeight: '1.75' }}>
-            <strong>In an emergency:</strong> Call <strong>999</strong> or go to your nearest A&E. For crisis support call <strong>Samaritans free on 116 123</strong> — available 24 hours a day, 7 days a week.
+            <strong>In an emergency:</strong> Call <strong>999</strong> or go to your nearest A&E. For crisis support call <strong>Samaritans free on 116 123</strong> available 24 hours a day, 7 days a week.
           </p>
         </div>
 

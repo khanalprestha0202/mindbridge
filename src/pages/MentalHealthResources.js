@@ -147,7 +147,7 @@ export default function MentalHealthResources() {
         <div style={{ background: '#eff6ff', borderRadius: '10px', padding: '14px 20px', border: '1px solid #bfdbfe' }}>
           <p style={{ margin: '0 0 3px', fontSize: '12px', fontWeight: '700', color: '#1d4ed8' }}>Important</p>
           <p style={{ margin: 0, fontSize: '12px', color: '#374151', lineHeight: '1.6' }}>
-            MindBridge is a support navigation tool — not a clinical service. All organisations listed are verified official UK mental health services. Not a substitute for professional care. In a medical emergency always call <strong>999</strong>.
+            MindBridge is a support navigation tool not a clinical service. All organisations listed are verified official UK mental health services. Not a substitute for professional care. In a medical emergency always call <strong>999</strong>.
           </p>
         </div>
 
