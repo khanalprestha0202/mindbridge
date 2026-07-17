@@ -7,11 +7,11 @@ import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
 import LoginPage from './pages/LoginPage';
 
-// CRISIS DETECTION 
+// ── CRISIS DETECTION ─────────────────────────────────────────────
 const CRISIS_WORDS = ['suicide','kill myself','end my life','self harm','self-harm','want to die','hurt myself','no point living','overdose'];
 function isCrisis(t) { return CRISIS_WORDS.some(w => t.toLowerCase().includes(w)); }
 
-// CHATBOT LOGIC
+// ── CHATBOT LOGIC ─────────────────────────────────────────────────
 function getBotReply(input, state) {
   const { name, country, university, countryData, universityData } = state;
   const t = input.toLowerCase();
@@ -110,7 +110,7 @@ function getBotReply(input, state) {
   return { text: `I hear you, ${name} 💙 Thank you for sharing that with me.\n\nCould you tell me a bit more about what you are going through? I want to make sure I give you the most helpful support.\n\nRemember — whatever you are dealing with, you are not alone.` };
 }
 
-// MOOD SCREEN 
+// ── MOOD SCREEN ───────────────────────────────────────────────────
 function MoodScreen({ onSelect }) {
   const [selected, setSelected] = useState(null);
   const [animating, setAnimating] = useState(false);
@@ -200,7 +200,7 @@ function MoodScreen({ onSelect }) {
   );
 }
 
-// CRISIS MODAL
+// ── CRISIS MODAL ──────────────────────────────────────────────────
 function CrisisModal({ onClose }) {
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 300, background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
@@ -209,7 +209,7 @@ function CrisisModal({ onClose }) {
         <h2 style={{ color: '#C00000', margin: '0 0 12px', fontSize: '22px' }}>You Are Not Alone</h2>
         <p style={{ color: '#555', margin: '0 0 24px', fontSize: '14px', lineHeight: '1.7' }}>We noticed something in your message that concerns us. Please reach out for immediate support right now.</p>
         <div style={{ background: '#FDE8E8', borderRadius: '14px', padding: '18px', marginBottom: '12px' }}>
-          <p style={{ margin: '0 0 4px', fontWeight: '700', color: '#C00000', fontSize: '14px' }}>📞 Samaritans-Free · 24/7 · Confidential</p>
+          <p style={{ margin: '0 0 4px', fontWeight: '700', color: '#C00000', fontSize: '14px' }}>📞 Samaritans — Free · 24/7 · Confidential</p>
           <p style={{ margin: '0 0 4px', fontSize: '34px', fontWeight: '900', color: '#C00000', letterSpacing: '3px' }}>116 123</p>
         </div>
         <div style={{ background: '#EBF3FB', borderRadius: '14px', padding: '14px', marginBottom: '12px' }}>
@@ -220,14 +220,14 @@ function CrisisModal({ onClose }) {
           <p style={{ margin: 0, fontWeight: '900', fontSize: '26px', color: '#1a3a5c' }}>🚑 Emergency: 999</p>
         </div>
         <button onClick={onClose} style={{ background: 'linear-gradient(135deg,#2E75B6,#0f2744)', color: 'white', border: 'none', borderRadius: '14px', padding: '16px', cursor: 'pointer', fontWeight: '700', fontSize: '15px', width: '100%' }}>
-          I am safe. Return to MindBridge
+          I am safe — return to MindBridge
         </button>
       </div>
     </div>
   );
 }
 
-// CHAT PAGE
+// ── CHAT PAGE ─────────────────────────────────────────────────────
 function ChatPage({ messages, input, setInput, sendMessage, student, mood }) {
   const bottomRef = useRef();
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
@@ -236,7 +236,7 @@ function ChatPage({ messages, input, setInput, sendMessage, student, mood }) {
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <div style={{ padding: '20px 28px', background: 'white', borderBottom: '1px solid #eaecf0' }}>
         <h2 style={{ margin: '0 0 4px', fontSize: '20px', fontWeight: '800', color: '#0f2744' }}>💬 Chat Support</h2>
-        <p style={{ margin: 0, fontSize: '13px', color: '#9ca3af' }}>Tell me what is on your mind. I am here to listen and help</p>
+        <p style={{ margin: 0, fontSize: '13px', color: '#9ca3af' }}>Tell me what is on your mind — I am here to listen and help</p>
       </div>
       <div style={{ flex: 1, overflowY: 'auto', padding: '24px 28px', display: 'flex', flexDirection: 'column', gap: '14px', background: '#f8f9fc' }}>
         {messages.map((msg, i) => (
@@ -259,14 +259,14 @@ function ChatPage({ messages, input, setInput, sendMessage, student, mood }) {
   );
 }
 
-// UNIVERSITY PAGE 
+// ── UNIVERSITY PAGE ───────────────────────────────────────────────
 function UniversityPage({ universityData, university }) {
   if (!universityData) return (
     <div style={{ flex: 1, overflowY: 'auto', padding: '28px 36px', background: '#f8f9fc' }}>
       <div style={{ textAlign: 'center', padding: '80px', background: 'white', borderRadius: '16px', border: '1px solid #eaecf0' }}>
         <p style={{ fontSize: '64px', margin: '0 0 20px' }}>🏫</p>
         <h3 style={{ margin: '0 0 8px', color: '#0f2744' }}>Tell me your university first</h3>
-        <p style={{ color: '#9ca3af', fontSize: '15px' }}>Go to the Chat tab and tell MindBridge which university you attend. Your support links will appear here.</p>
+        <p style={{ color: '#9ca3af', fontSize: '15px' }}>Go to the Chat tab and tell MindBridge which university you attend — your support links will appear here.</p>
       </div>
     </div>
   );
@@ -289,14 +289,14 @@ function UniversityPage({ universityData, university }) {
   );
 }
 
-// COUNTRY PAGE 
+// ── COUNTRY PAGE ──────────────────────────────────────────────────
 function CountryPage({ countryData, country }) {
   if (!countryData) return (
     <div style={{ flex: 1, overflowY: 'auto', padding: '28px 36px', background: '#f8f9fc' }}>
       <div style={{ textAlign: 'center', padding: '80px', background: 'white', borderRadius: '16px', border: '1px solid #eaecf0' }}>
         <p style={{ fontSize: '64px', margin: '0 0 20px' }}>🌍</p>
         <h3 style={{ margin: '0 0 8px', color: '#0f2744' }}>Tell me your country first</h3>
-        <p style={{ color: '#9ca3af', fontSize: '15px' }}>Go to the Chat tab and tell MindBridge which country you are from. Your support links will appear here.</p>
+        <p style={{ color: '#9ca3af', fontSize: '15px' }}>Go to the Chat tab and tell MindBridge which country you are from — your support links will appear here.</p>
       </div>
     </div>
   );
@@ -326,7 +326,7 @@ function CountryPage({ countryData, country }) {
   );
 }
 
-// HAMBURGER MENU 
+// ── HAMBURGER MENU ────────────────────────────────────────────────
 function HamburgerMenu({ onClose, countryData, universityData }) {
   const quickLinks = [
     { name: 'Samaritans', desc: 'Free · 24/7 crisis support', url: 'https://www.samaritans.org', color: '#007B40' },
@@ -387,7 +387,7 @@ function HamburgerMenu({ onClose, countryData, universityData }) {
   );
 }
 
-//  MAIN APP 
+// ── MAIN APP ──────────────────────────────────────────────────────
 export default function App() {
   const [screen, setScreen] = useState('main');
   const [mood, setMood] = useState('');
@@ -407,12 +407,33 @@ export default function App() {
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('moodHistory') || '[]');
     setMoodHistory(saved);
-    // Check if user is already logged in
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       const parsedUser = JSON.parse(savedUser);
       setUser(parsedUser);
-      setStudent(p => ({ ...p, name: parsedUser.name }));
+      const firstName = parsedUser.name ? parsedUser.name.split(' ')[0] : '';
+      setStudent(p => ({ ...p, name: firstName }));
+      const token = localStorage.getItem('token');
+      if (token && !token.startsWith('local-')) {
+        fetch('http://localhost:5000/api/mood/history', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data) && data.length > 0) {
+            const formatted = data.map(m => ({
+              date: new Date(m.createdAt).toLocaleDateString('en-GB'),
+              label: m.label,
+              value: m.score,
+              note: m.note || '',
+              time: new Date(m.createdAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+            }));
+            setMoodHistory(formatted);
+            localStorage.setItem('moodHistory', JSON.stringify(formatted));
+          }
+        })
+        .catch(() => console.log('Using local mood history'));
+      }
     }
     setAuthChecked(true);
   }, []);
@@ -448,7 +469,7 @@ export default function App() {
     localStorage.setItem('moodHistory', JSON.stringify(updated));
     setMoodHistory(updated);
     setMood(label);
-    setMessages([{ sender: 'bot', text: `Hello! Welcome to MindBridge 💙\n\nI can see you are feeling ${label} today, thank you for sharing that. Whether you are a home student or studying here from abroad, I am here to support you.\n\nCould you start by telling me your name?` }]);
+    setMessages([{ sender: 'bot', text: `Hello! Welcome to MindBridge 💙\n\nI can see you are feeling ${label} today — thank you for sharing that. Whether you are a home student or studying here from abroad, I am here to support you.\n\nCould you start by telling me your name?` }]);
   }
 
   function sendMessage() {
