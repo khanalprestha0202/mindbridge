@@ -14,7 +14,7 @@ function ResourceCard({ resource }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{
             width: '64px', height: '44px', borderRadius: '8px',
-            background: resource.logoBg, padding: '6px',
+            background: resource.logoBg || resource.headerBg, padding: '6px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             flexShrink: 0, overflow: 'hidden', border: '1px solid #f0f0f0',
           }}>
@@ -46,8 +46,6 @@ function ResourceCard({ resource }) {
         <p style={{ margin: 0, fontSize: '13px', color: '#374151', lineHeight: '1.6' }}>
           {resource.desc}
         </p>
-
-
       </div>
 
       <div style={{
@@ -70,47 +68,27 @@ export default function MentalHealthResources() {
   return (
     <div style={{ flex: 1, overflowY: 'auto', background: '#f9fafb' }}>
 
-      <div style={{ background: 'white', padding: '26px 32px', borderBottom: '1px solid #e5e7eb' }}>
-        <h1 style={{ margin: '0 0 6px', fontSize: '22px', fontWeight: '800', color: '#111827' }}>
-          Mental Health Support Resources
-        </h1>
-        <p style={{ margin: 0, color: '#6b7280', fontSize: '14px', lineHeight: '1.65', maxWidth: '600px' }}>
-          Free, verified support services for all university students in the UK.
-          Every service here is confidential and costs nothing to use.
-        </p>
+      {/* Page header */}
+      <div style={{ background: 'linear-gradient(135deg, #0f2744, #2E75B6)', padding: '36px 32px' }}>
+        <div style={{ maxWidth: '680px' }}>
+          <p style={{ margin: '0 0 8px', fontSize: '12px', fontWeight: '700', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '2px' }}>
+            You are not alone 💙
+          </p>
+          <h1 style={{ margin: '0 0 14px', fontSize: '26px', fontWeight: '800', color: 'white', letterSpacing: '-0.5px', lineHeight: '1.3' }}>
+            Mental Health Support Resources
+          </h1>
+          <p style={{ margin: '0 0 20px', color: 'rgba(255,255,255,0.85)', fontSize: '15px', lineHeight: '1.75' }}>
+            University life can be overwhelming deadlines, homesickness, financial pressure, loneliness. Whatever you are going through right now, support is available and you deserve to access it.
+          </p>
+          <p style={{ margin: 0, color: 'rgba(255,255,255,0.7)', fontSize: '14px', lineHeight: '1.7' }}>
+            Every service listed below is <strong style={{ color: 'white' }}>completely free</strong>, <strong style={{ color: 'white' }}>confidential</strong> and available to all university students in the UK whether you are a home student, an international student or studying on an EU visa. You do not need a GP referral for most of them. Just reach out.
+          </p>
+        </div>
       </div>
 
       <div style={{ padding: '26px 32px' }}>
 
-        <div style={{
-          background: '#7F0000', borderRadius: '12px', padding: '20px 24px',
-          marginBottom: '28px', display: 'flex', alignItems: 'center',
-          justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px',
-        }}>
-          <div>
-            <p style={{ margin: '0 0 2px', fontSize: '10px', fontWeight: '700', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '2px' }}>
-              IN A CRISIS RIGHT NOW?
-            </p>
-            <p style={{ margin: '0 0 3px', fontSize: '20px', fontWeight: '900', color: 'white' }}>
-              Call Samaritans — 116 123
-            </p>
-            <p style={{ margin: 0, fontSize: '13px', color: 'rgba(255,255,255,0.75)' }}>
-              Free · 24 hours a day · 7 days a week · Completely confidential
-            </p>
-          </div>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-            <a href="https://www.samaritans.org" target="_blank" rel="noreferrer" style={{ background: 'white', color: '#7F0000', fontWeight: '800', fontSize: '13px', padding: '9px 18px', borderRadius: '8px', textDecoration: 'none' }}>
-              📞 Call 116 123
-            </a>
-            <a href="https://www.giveusashout.org" target="_blank" rel="noreferrer" style={{ background: 'rgba(255,255,255,0.1)', color: 'white', fontWeight: '700', fontSize: '13px', padding: '9px 16px', borderRadius: '8px', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.2)' }}>
-              💬 Text SHOUT to 85258
-            </a>
-            <span style={{ background: 'rgba(255,255,255,0.1)', color: 'white', fontWeight: '700', fontSize: '13px', padding: '9px 16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.2)' }}>
-              🚑 Emergency — 999
-            </span>
-          </div>
-        </div>
-
+        {/* Section heading */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
           <h2 style={{ margin: 0, fontSize: '15px', fontWeight: '700', color: '#374151' }}>
             All Services ({resources.length})
@@ -118,32 +96,12 @@ export default function MentalHealthResources() {
           <span style={{ fontSize: '12px', color: '#9ca3af' }}>Click any card to visit the official website</span>
         </div>
 
+        {/* Cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px', marginBottom: '28px' }}>
           {resources.map(r => <ResourceCard key={r.id} resource={r} />)}
         </div>
 
-        <div style={{ background: 'white', borderRadius: '12px', padding: '22px 26px', border: '1px solid #e5e7eb', marginBottom: '18px' }}>
-          <h3 style={{ margin: '0 0 16px', fontSize: '14px', fontWeight: '700', color: '#111827' }}>
-            Key Helpline Numbers
-          </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: '10px' }}>
-            {[
-              { name: 'Samaritans', number: '116 123', note: 'Free · 24/7 · Call', color: '#007A3D', url: 'https://www.samaritans.org' },
-              { name: 'Shout Crisis Text', number: 'Text SHOUT to 85258', note: 'Free · 24/7 · Text', color: '#3D1152', url: 'https://www.giveusashout.org' },
-              { name: 'CALM Helpline', number: '0800 58 58 58', note: 'Free · 5pm–midnight', color: '#1C0A3C', url: 'https://www.thecalmzone.net' },
-              { name: 'Mind Infoline', number: '0300 123 3393', note: 'Mon–Fri · 9am–6pm', color: '#1B3668', url: 'https://www.mind.org.uk' },
-              { name: 'NHS 111', number: '111', note: 'Urgent medical · 24/7', color: '#005EB8', url: 'https://111.nhs.uk' },
-              { name: 'Emergency Services', number: '999', note: 'Life-threatening only', color: '#111827', url: '#' },
-            ].map(item => (
-              <a key={item.name} href={item.url} target="_blank" rel="noreferrer" style={{ borderRadius: '8px', padding: '14px 16px', borderLeft: `4px solid ${item.color}`, background: '#f9fafb', textDecoration: 'none', display: 'block' }}>
-                <p style={{ margin: '0 0 3px', fontSize: '11px', color: '#6b7280', fontWeight: '600' }}>{item.name}</p>
-                <p style={{ margin: '0 0 3px', fontSize: '16px', fontWeight: '900', color: item.color, letterSpacing: '0.3px' }}>{item.number}</p>
-                <p style={{ margin: 0, fontSize: '11px', color: '#9ca3af' }}>{item.note}</p>
-              </a>
-            ))}
-          </div>
-        </div>
-
+        {/* Disclaimer only */}
         <div style={{ background: '#eff6ff', borderRadius: '10px', padding: '14px 20px', border: '1px solid #bfdbfe' }}>
           <p style={{ margin: '0 0 3px', fontSize: '12px', fontWeight: '700', color: '#1d4ed8' }}>Important</p>
           <p style={{ margin: 0, fontSize: '12px', color: '#374151', lineHeight: '1.6' }}>

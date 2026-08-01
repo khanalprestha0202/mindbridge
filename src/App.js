@@ -5,6 +5,7 @@ import MentalHealthResources from './pages/MentalHealthResources';
 import MoodTrackerPage from './pages/MoodTrackerPage';
 import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
+import EvaluationPage from './pages/EvaluationPage';
 import LoginPage from './pages/LoginPage';
 
 // ── CRISIS DETECTION ─────────────────────────────────────────────
@@ -495,6 +496,7 @@ export default function App() {
     { id: 'university', icon: '🏫', label: 'My University' },
     { id: 'country', icon: '🌍', label: 'My Country Support' },
     { id: 'profile', icon: '👤', label: 'My Profile' },
+    { id: 'evaluation', icon: '🔬', label: 'User Evaluation' },
   ];
 
   if (screen === 'mood') return <MoodScreen onSelect={selectMood} />;
@@ -590,6 +592,7 @@ export default function App() {
           {activeTab === 'university' && <UniversityPage universityData={student.universityData} university={student.university} />}
           {activeTab === 'country' && <CountryPage countryData={student.countryData} country={student.country} />}
           {activeTab === 'profile' && <ProfilePage user={user} setUser={setUser} moodHistory={moodHistory} onLogout={handleLogout} />}
+          {activeTab === 'evaluation' && <EvaluationPage />}
         </main>
       </div>
     </div>
