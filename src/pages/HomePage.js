@@ -20,7 +20,7 @@ export default function HomePage({ user, mood, onSelectMood, setActiveTab }) {
           {greeting}, {firstName}! 👋
         </h1>
         <p style={{ margin: 0, fontSize: '15px', opacity: 0.8 }}>
-          Welcome to MindBridge — your mental health companion for university students in the UK
+          Welcome to MindBridge your mental health companion for university students in the UK
         </p>
       </div>
 
@@ -32,7 +32,7 @@ export default function HomePage({ user, mood, onSelectMood, setActiveTab }) {
             {mood ? `Today you are feeling ${mood}` : 'How are you feeling today?'}
           </h2>
           <p style={{ margin: '0 0 20px', fontSize: '14px', color: '#6b7280' }}>
-            {mood ? 'You can update your mood or start chatting below' : 'Select your mood to get started — this helps MindBridge personalise your experience'}
+            {mood ? 'You can update your mood or start chatting below' : 'Select your mood to get started this helps MindBridge personalise your experience'}
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '20px' }}>
             {moods.map(m => (
@@ -86,7 +86,7 @@ export default function HomePage({ user, mood, onSelectMood, setActiveTab }) {
         <div style={{ background: 'white', borderRadius: '16px', padding: '28px', border: '1px solid #e5e7eb', marginBottom: '20px' }}>
           <h4 style={{ margin: '0 0 12px', fontSize: '16px', fontWeight: '800', color: '#0f2744' }}>🎯 What is MindBridge?</h4>
           <p style={{ margin: '0 0 10px', fontSize: '14px', color: '#374151', lineHeight: '1.75' }}>
-            MindBridge is a free, AI-free web application that provides personalised mental health support for university students. It uses a rule-based conversational chatbot that learns who you are your name, country and university and then provides tailored support and resources specific to your situation.
+            MindBridge is a free, web application that provides personalised mental health support for university students. It uses a rule-based conversational chatbot that learns who you are your name, country and university and then provides tailored support and resources specific to your situation.
           </p>
           <p style={{ margin: 0, fontSize: '14px', color: '#374151', lineHeight: '1.75' }}>
             Unlike generic mental health apps, MindBridge understands the unique challenges faced by students from academic pressure and exam stress to homesickness, visa concerns, housing issues and financial difficulties. It connects students to the right support at the right time.
@@ -132,37 +132,12 @@ export default function HomePage({ user, mood, onSelectMood, setActiveTab }) {
           </div>
         </div>
 
-
-        {/* Disclaimer */}
-        <div style={{ background: '#FEF9C3', borderRadius: '16px', padding: '24px', border: '1px solid #FDE047', marginBottom: '20px' }}>
-          <h4 style={{ margin: '0 0 12px', fontSize: '16px', fontWeight: '800', color: '#854D0E' }}>⚠️ Important Disclaimer</h4>
-          <p style={{ margin: '0 0 8px', fontSize: '14px', color: '#713F12', lineHeight: '1.75' }}>
-            <strong>MindBridge is not a substitute for professional mental health care.</strong> It is a support navigation tool designed to help students find the right resources and provide a first point of contact for those who are struggling.
-          </p>
-          <p style={{ margin: 0, fontSize: '14px', color: '#713F12', lineHeight: '1.75' }}>
-            <strong>In an emergency:</strong> Call <strong>999</strong> or go to your nearest A&E. For crisis support call <strong>Samaritans free on 116 123</strong>  available 24 hours a day, 7 days a week.
-          </p>
-        </div>
-
         {/* Privacy */}
         <div style={{ background: 'white', borderRadius: '16px', padding: '28px', border: '1px solid #e5e7eb', marginBottom: '24px' }}>
           <h4 style={{ margin: '0 0 12px', fontSize: '16px', fontWeight: '800', color: '#0f2744' }}>🔒 Privacy & Data</h4>
           <p style={{ margin: 0, fontSize: '14px', color: '#374151', lineHeight: '1.75' }}>
             MindBridge takes your privacy seriously. Chat conversations are stored in your browser memory only and are never sent to or stored on any server. Mood tracker data is stored locally in your browser. Your account information is stored securely with encrypted passwords. MindBridge does not sell or share your data with any third party.
           </p>
-        </div>
-
-        {/* Crisis banner */}
-        <div style={{ background: '#7F0000', borderRadius: '14px', padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-          <div style={{ color: 'white' }}>
-            <p style={{ margin: '0 0 2px', fontSize: '11px', fontWeight: '700', opacity: 0.7, textTransform: 'uppercase', letterSpacing: '1.5px' }}>In a crisis right now?</p>
-            <p style={{ margin: 0, fontSize: '18px', fontWeight: '900', color: 'white' }}>Call Samaritans — 116 123</p>
-            <p style={{ margin: 0, fontSize: '13px', opacity: 0.8 }}>Free · 24/7 · Completely confidential</p>
-          </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <a href="tel:116123" style={{ background: 'white', color: '#7F0000', fontWeight: '800', fontSize: '13px', padding: '10px 18px', borderRadius: '8px', textDecoration: 'none' }}>📞 Call 116 123</a>
-            <a href="sms:85258?body=SHOUT" style={{ background: 'rgba(255,255,255,0.15)', color: 'white', fontWeight: '700', fontSize: '13px', padding: '10px 16px', borderRadius: '8px', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.2)' }}>💬 Text SHOUT</a>
-          </div>
         </div>
 
       </div>
