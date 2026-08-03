@@ -19,6 +19,8 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/mood', require('./routes/mood'));
 app.use('/api/chat', require('./routes/chat'));
+app.use('/api/evaluation', require('./routes/evaluation'));
+app.use('/api/data', require('./routes/data'));
 
 // Health check
 app.get('/', (req, res) => {
