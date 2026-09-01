@@ -35,6 +35,7 @@ export default function EvaluationPage({ user }) {
   const [interviewAnswers, setInterviewAnswers] = useState(Array(5).fill(''));
   const [submitting, setSubmitting] = useState(false);
   const [alreadySubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   function handleResponse(qIndex, value) {
     const updated = [...responses];
@@ -51,25 +52,36 @@ export default function EvaluationPage({ user }) {
     return score * 2.5;
   }
 
+  function getParticipantCode() {
+    let code = localStorage.getItem('participant_code');
+    if (!code) {
+      code = 'P-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+      localStorage.setItem('participant_code', code);
+    }
+    return code;
+  }
+
   async function handleSubmit() {
     if (responses.includes(0)) {
       alert('Please answer all questions before submitting.');
       return;
     }
     setSubmitting(true);
+    setSubmitError('');
     const susScore = calculateSUS();
     const evaluationData = {
-      userId: user?.id,
-      userName: user?.name,
-      userEmail: user?.email,
+      participantCode: getParticipantCode(),
       susScore: susScore.toFixed(1),
       susResponses: responses,
       interviewAnswers,
       submittedAt: new Date().toISOString(),
     };
+
+    let savedSuccessfully = false;
+
     try {
       const token = localStorage.getItem('token');
-      await fetch('http://localhost:5000/api/evaluation', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/evaluation`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,10 +89,24 @@ export default function EvaluationPage({ user }) {
         },
         body: JSON.stringify(evaluationData),
       });
+
+      if (res.ok) {
+        savedSuccessfully = true;
+      } else {
+        // Server responded but rejected the request (e.g. 401 invalid token, 500 server error)
+        console.error('Evaluation submit failed with status', res.status);
+      }
     } catch (err) {
+      // Genuine network failure (server unreachable)
+      console.error('Evaluation submit network error', err);
+    }
+
+    if (!savedSuccessfully) {
+      // Always fall back to local storage so no response is ever silently lost
       const saved = JSON.parse(localStorage.getItem('sus_results_local') || '[]');
       saved.push(evaluationData);
       localStorage.setItem('sus_results_local', JSON.stringify(saved));
+      setSubmitError('Your response was saved on this device but could not be sent to the server yet. Please let the researcher know so it can be recovered.');
     }
 
     setSubmitting(false);
@@ -114,7 +140,7 @@ export default function EvaluationPage({ user }) {
             <div style={{ background: '#f0f7ff', borderRadius: '10px', padding: '16px', marginBottom: '24px', border: '1px solid #bfdbfe' }}>
               <p style={{ margin: '0 0 4px', fontSize: '13px', fontWeight: '700', color: '#1e40af' }}>Please note</p>
               <p style={{ margin: 0, fontSize: '13px', color: '#374151', lineHeight: '1.65' }}>
-                Your answers are completely confidential and will only be used for academic research. You can stop at any time. You will not be able to see your results.
+                Your answers are completely anonymous and confidential and will only be used for academic research. Your name and email are not stored with your responses. You can stop at any time. You will not be able to see your results.
               </p>
             </div>
             <button onClick={() => setStep('sus')} style={{ background: 'linear-gradient(135deg,#2E75B6,#0f2744)', color: 'white', border: 'none', borderRadius: '12px', padding: '14px 32px', cursor: 'pointer', fontWeight: '700', fontSize: '15px' }}>
@@ -219,8 +245,13 @@ export default function EvaluationPage({ user }) {
               Your feedback has been saved and will be used to make MindBridge better for university students across the UK.
             </p>
             <p style={{ margin: '0 0 28px', fontSize: '13px', color: '#9ca3af', lineHeight: '1.7' }}>
-              Your responses are kept confidential and will only be used for academic research as part of a Masters dissertation at St Mary's University, Twickenham.
+              Your responses are kept anonymous and confidential and will only be used for academic research as part of a Masters dissertation at St Mary's University, Twickenham.
             </p>
+            {submitError && (
+              <div style={{ background: '#FEF2F2', border: '1px solid #FCA5A5', borderRadius: '12px', padding: '14px 18px', maxWidth: '420px', margin: '0 auto 16px', textAlign: 'left' }}>
+                <p style={{ margin: 0, fontSize: '13px', color: '#B91C1C', lineHeight: '1.6' }}>⚠️ {submitError}</p>
+              </div>
+            )}
             <div style={{ background: '#f0f7ff', borderRadius: '12px', padding: '16px 20px', maxWidth: '400px', margin: '0 auto', border: '1px solid #bfdbfe' }}>
               <p style={{ margin: '0 0 4px', fontSize: '13px', fontWeight: '700', color: '#1e40af' }}>Your feedback makes a real difference</p>
               <p style={{ margin: 0, fontSize: '13px', color: '#374151', lineHeight: '1.6' }}>

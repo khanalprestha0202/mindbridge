@@ -132,6 +132,20 @@ export default function HomePage({ user, mood, onSelectMood, setActiveTab }) {
           </div>
         </div>
 
+        {/* Important Disclaimer */}
+        <div style={{ background: '#FEF9C3', borderRadius: '16px', padding: '28px', border: '1px solid #FDE047', marginBottom: '20px' }}>
+          <h4 style={{ margin: '0 0 14px', fontSize: '16px', fontWeight: '800', color: '#854D0E' }}>⚠️ Important Disclaimer</h4>
+          <p style={{ margin: '0 0 10px', fontSize: '14px', color: '#713F12', lineHeight: '1.75' }}>
+            <strong>MindBridge is not a substitute for professional mental health care.</strong> It is a support navigation tool designed to help students find the right resources and to provide a first point of contact for those who are struggling.
+          </p>
+          <p style={{ margin: '0 0 10px', fontSize: '14px', color: '#713F12', lineHeight: '1.75' }}>
+            MindBridge does not provide clinical advice, diagnosis or therapy. The chatbot is rule-based and not a human counsellor. If you are experiencing a mental health crisis, please contact a professional service immediately.
+          </p>
+          <p style={{ margin: 0, fontSize: '14px', color: '#713F12', lineHeight: '1.75' }}>
+            <strong>In an emergency:</strong> Call <strong>999</strong> or go to your nearest A&E. For crisis support call <strong>Samaritans free on 116 123</strong> available 24 hours a day, 7 days a week.
+          </p>
+        </div>
+
         {/* Privacy */}
         <div style={{ background: 'white', borderRadius: '16px', padding: '28px', border: '1px solid #e5e7eb', marginBottom: '24px' }}>
           <h4 style={{ margin: '0 0 12px', fontSize: '16px', fontWeight: '800', color: '#0f2744' }}>🔒 Privacy & Data</h4>

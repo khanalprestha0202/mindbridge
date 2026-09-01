@@ -64,7 +64,7 @@ export default function MoodTrackerPage({ moodHistory, setMoodHistory }) {
     try {
       const token = localStorage.getItem('token');
       if (token && !token.startsWith('local-')) {
-        await fetch('http://localhost:5000/api/mood', {
+        await fetch(`${process.env.REACT_APP_API_URL}/api/mood`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

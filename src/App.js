@@ -3,7 +3,6 @@ import { getCountryData } from './data/countries';
 import { getUniversityData } from './data/universities';
 import MentalHealthResources from './pages/MentalHealthResources';
 import MoodTrackerPage from './pages/MoodTrackerPage';
-import AboutPage from './pages/AboutPage';
 import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
 import EvaluationPage from './pages/EvaluationPage';
@@ -277,7 +276,7 @@ export default function App() {
       setStudent(p => ({ ...p, name: firstName }));
       const token = localStorage.getItem('token');
       if (token && !token.startsWith('local-')) {
-        fetch('http://localhost:5000/api/mood/history', { headers: { 'Authorization': 'Bearer ' + token } })
+        fetch(`${process.env.REACT_APP_API_URL}/api/mood/history`, { headers: { 'Authorization': 'Bearer ' + token } })
           .then(res => res.json())
           .then(data => {
             if (Array.isArray(data) && data.length > 0) {
